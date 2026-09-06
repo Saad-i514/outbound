@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Environment variables & secrets (Streamlit Cloud uses Secrets management)
+.env
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# OS Files
+.DS_Store
+Thumbs.db
