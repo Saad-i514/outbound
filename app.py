@@ -379,10 +379,19 @@ def render_email_template(template_str, merge_data, signature_data=None):
             
     return rendered
 
+# Helper to safely load configuration from Streamlit Cloud Secrets or .env
+def get_config_val(key, default=""):
+    try:
+        if hasattr(st, "secrets") and key in st.secrets:
+            return str(st.secrets[key])
+    except Exception:
+        pass
+    return os.getenv(key, default)
+
 if "send_history" not in st.session_state:
     st.session_state.send_history = []
 
-if "editable_plain_text" not in st.session_state or "unsubscribe" in st.session_state.editable_plain_text.lower():
+if "editable_plain_text" not in st.session_state:
     st.session_state.editable_plain_text = DEFAULT_PLAIN_TEMPLATE
 
 # ----------------- TOP WORKHIVE HQ HERO HEADER -----------------
@@ -434,7 +443,7 @@ st.markdown(f"""
 with st.sidebar:
     st.markdown("### ⚙️ Dispatch Settings")
     
-    default_key = os.getenv("RESEND_API_KEY", "re_XXngPNv1_JaAiWRJFmy8UvhCQPuywSewN")
+    default_key = get_config_val("RESEND_API_KEY", "re_XXngPNv1_JaAiWRJFmy8UvhCQPuywSewN")
     api_key = st.text_input("Resend API Key", value=default_key, type="password", help="Authenticated Resend secret key")
     
     st.markdown("---")
@@ -452,7 +461,8 @@ with st.sidebar:
     else:
         sender_address = st.text_input("Custom Sender Email", value="WorkHive HQ <tooba@workhivehq.online>")
         
-    reply_to = st.text_input("Reply-To Address", value=os.getenv("DEFAULT_REPLY_TO", "tooba@workhivehq.online"))
+    default_reply_to = get_config_val("DEFAULT_REPLY_TO", "tooba@workhivehq.online")
+    reply_to = st.text_input("Reply-To Address", value=default_reply_to)
     
     st.markdown("---")
     st.markdown("### 🎯 Dispatch Protocol")
