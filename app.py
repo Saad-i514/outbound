@@ -443,8 +443,11 @@ st.markdown(f"""
 with st.sidebar:
     st.markdown("### ⚙️ Dispatch Settings")
     
-    default_key = get_config_val("RESEND_API_KEY", "re_XXngPNv1_JaAiWRJFmy8UvhCQPuywSewN")
-    api_key = st.text_input("Resend API Key", value=default_key, type="password", help="Authenticated Resend secret key")
+    default_key = get_config_val("RESEND_API_KEY", "")
+    api_key = st.text_input("Resend API Key", value=default_key, type="password", help="Authenticated Resend secret key (starts with re_)")
+    
+    if not api_key:
+        st.warning("⚠️ Please enter your Resend API Key to enable sending.")
     
     st.markdown("---")
     st.markdown("### 📤 Sender Identity")
